@@ -1,7 +1,32 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Placeholder from '../components/Placeholder.astro';
+import ResourceCard from '../components/ResourceCard.astro';
+
+// AARP's own job board was retired; AARP now points job seekers to a job search run with Indeed.
+const AARP_INDEED_URL = 'https://www.indeed.com/job-search-services/partner-aarp-jobs?from=partner-aarp&collectorID=partner-aarp';
 ---
-<Layout title="Workers 50+" intro="Job boards and employers that welcome experienced workers.">
-  <Placeholder>AARP resource card coming soon.</Placeholder>
+<Layout
+  title="Workers 50+"
+  intro="A job search for experienced workers from AARP and Indeed. It doesn't share its listings with other sites, so we link you straight to it."
+>
+  <ResourceCard
+    name="AARP + Indeed"
+    url={AARP_INDEED_URL}
+    buttonLabel="Search jobs for workers 50+"
+    whoFor="Experienced workers, especially people 50 and older. AARP teamed up with Indeed on a job search picked for experienced workers."
+    expect={[
+      'It is free to search for jobs.',
+      'The search runs on Indeed, so the pages will look like Indeed, not AARP.',
+      'Indeed may ask you to create a free account before you apply or save a job.',
+      'Some employers show a "Work Wellbeing" score, which can help you find age-friendly workplaces.',
+      'Indeed also sells extra services. You never need to pay to search or apply for a job.',
+    ]}
+    tips={[
+      'Search for a job title with "Naples, FL" or "Remote" to see jobs near you or from home.',
+      'Your resume can focus on your last 10 to 15 years of work. You do not need to list graduation dates.',
+      'Real employers never ask you to pay, buy equipment up front, or share bank details before you are hired.',
+      'Found a job you like? Bring it to your Job Pathway coach for help with your resume and interview.',
+    ]}
+    secondaryLink={{ label: 'More job help from AARP', url: 'https://www.aarp.org/work/job-search/' }}
+  />
 </Layout>

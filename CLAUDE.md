@@ -23,7 +23,7 @@ A job-listing hub for St. Vincent de Paul Naples' Job Pathway Program. Users are
 ## Category → data source
 - **Remote Work**: We Work Remotely (RSS), Remotive (API), Jobicy (API, `geo=usa`). Himalayas later.
 - **Local Jobs**: Adzuna API (existing board). Credentials in `.env` as `ADZUNA_APP_ID`, `ADZUNA_APP_KEY`. Query by county (Collier, Lee), not radius. Adzuna's predicted salaries (`salary_is_predicted`) are estimates, so don't show them.
-- **Workers 50+** (AARP) and **Second-Chance Hiring** (Honest Jobs): no public feeds. Build these as resource-card pages: who the board is for, what to expect (e.g. "free account required"), a few tips, and a button to the site.
+- **Workers 50+** (AARP) and **Second-Chance Hiring** (Honest Jobs): no public feeds. AARP retired its own job board (jobs.aarp.org redirects); it now points job seekers to an AARP + Indeed job search, so the Workers 50+ page links there. Build these as resource-card pages: who the board is for, what to expect (e.g. "free account required"), a few tips, and a button to the site.
 - **Saved Jobs**: stored in the browser (localStorage). No accounts.
 
 ## Data rules

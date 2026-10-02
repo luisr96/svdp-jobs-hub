@@ -29,5 +29,12 @@ const { title, intro } = Astro.props;
         <slot />
       </main>
     </div>
+    <!-- Save confirmations (see scripts/save-buttons.ts). Always present so screen readers announce changes. -->
+    <div
+      id="status"
+      role="status"
+      class="pointer-events-none fixed inset-x-4 bottom-4 z-10 mx-auto max-w-md rounded-lg bg-navy px-4 py-3 text-center text-[15px] font-semibold text-white opacity-0 shadow-lg transition-opacity data-show:opacity-100"
+    >
+    </div>
   </body>
 </html>

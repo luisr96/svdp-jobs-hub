@@ -1,7 +1,91 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Placeholder from '../components/Placeholder.astro';
+import JobCard from '../components/JobCard.astro';
+import type { Job } from '../lib/types';
+
+// Placeholder job: the card is rendered once as a <template> and filled in the browser.
+const templateJob: Job = {
+  id: 'template',
+  source: 'Source',
+  title: 'Job title',
+  company: 'Company',
+  location: 'Location',
+  remote: false,
+  jobType: 'Full-time',
+  salary: 'Pay',
+  url: '#',
+  postedAt: new Date().toISOString(),
+};
 ---
-<Layout title="Saved Jobs" intro="Jobs you have saved on this device.">
-  <Placeholder>Saved jobs will appear here.</Placeholder>
+<Layout title="Saved Jobs" intro="Jobs you've saved on this device. Tap the bookmark on any job to save it or remove it.">
+  <p class="m-0 text-sm text-muted" data-saved-count hidden></p>
+
+  <div class="flex flex-col gap-3.5" data-saved-list></div>
+
+  <div class="rounded-xl border border-card-border bg-white p-6 text-muted" data-saved-empty tabindex="-1">
+    <p class="m-0">
+      You haven't saved any jobs yet. Tap the bookmark button on a job in <a href="/remote">Remote Work</a> or
+      <a href="/local">Local Jobs</a> to keep it here.
+    </p>
+  </div>
+
+  <footer class="border-t border-card-border pt-4 text-[13px] leading-[1.6] text-subtle">
+    Saved jobs are kept in this browser only. They won't appear on another phone or computer, and clearing your
+    browser data removes them. Jobs close over time — if a link no longer works, the job has probably been filled.
+  </footer>
+
+  <template id="saved-card"><JobCard job={templateJob} /></template>
 </Layout>
+
+<script>
+  import { loadSaved } from '../lib/saved';
+  import { postedAgo } from '../lib/format';
+  import { wireSaveButtons } from '../scripts/save-buttons';
+
+  const list = document.querySelector<HTMLElement>('[data-saved-list]')!;
+  const empty = document.querySelector<HTMLElement>('[data-saved-empty]')!;
+  const count = document.querySelector<HTMLElement>('[data-saved-count]')!;
+  const template = document.querySelector<HTMLTemplateElement>('#saved-card')!;
+
+  function updateCount() {
+    const n = list.children.length;
+    count.textContent = `${n} saved ${n === 1 ? 'job' : 'jobs'}`;
+    count.hidden = n === 0;
+    empty.hidden = n > 0;
+  }
+
+  for (const job of loadSaved()) {
+    const card = (template.content.firstElementChild as HTMLElement).cloneNode(true) as HTMLElement;
+    const field = (name: string) => card.querySelector<HTMLElement>(`[data-field="${name}"]`)!;
+    const { savedAt: _, ...snapshot } = job;
+
+    card.dataset.job = JSON.stringify(snapshot);
+    field('source').textContent = job.source;
+    field('posted').textContent = postedAgo(job.postedAt);
+    field('title').textContent = job.title;
+    field('company').textContent = job.company;
+    field('location').textContent = job.location;
+    field('type').textContent = job.jobType ?? '';
+    field('type').hidden = !job.jobType;
+    field('salary').textContent = job.salary ?? '';
+    field('salary').hidden = !job.salary;
+    const link = field('link') as HTMLAnchorElement;
+    link.href = job.url;
+    link.setAttribute('aria-label', `View job on ${job.source}`);
+    card.querySelector('button[data-save]')!.setAttribute('aria-label', `Save ${job.title}`);
+
+    list.append(card);
+  }
+
+  // Un-saving a job here removes its card.
+  wireSaveButtons(list, (card, saved) => {
+    if (!saved) {
+      // Keep keyboard/screen-reader focus nearby instead of losing it with the removed card.
+      const neighbor = (card.nextElementSibling ?? card.previousElementSibling) as HTMLElement | null;
+      card.remove();
+      updateCount();
+      (neighbor?.querySelector<HTMLElement>('button[data-save]') ?? empty).focus();
+    }
+  });
+  updateCount();
+</script>

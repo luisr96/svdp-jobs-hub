@@ -1,0 +1,54 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  name: string; // board name, used in headings and the button label
+  url: string;
+  buttonLabel: string;
+  whoFor: string;
+  expect: string[];
+  tips: string[];
+  secondaryLink?: { label: string; url: string };
+}
+const { name, url, buttonLabel, whoFor, expect, tips, secondaryLink } = Astro.props;
+const section = 'flex flex-col gap-2';
+const heading = 'm-0 text-lg font-bold text-navy';
+const listClass = 'm-0 flex list-disc flex-col gap-1.5 pl-5 text-base leading-[1.55] text-ink-2';
+---
+<article class="flex flex-col gap-6 rounded-xl border border-card-border bg-white p-6 min-[821px]:p-8">
+  <div class="flex flex-wrap items-center gap-2">
+    <span class="rounded bg-gold-tint px-2 py-1 text-xs font-bold uppercase tracking-[0.4px] text-navy">{name}</span>
+  </div>
+
+  <section class={section}>
+    <h2 class={heading}>Who it's for</h2>
+    <p class="m-0 text-base leading-[1.55] text-ink-2">{whoFor}</p>
+  </section>
+
+  <section class={section}>
+    <h2 class={heading}>What to expect</h2>
+    <ul class={listClass}>{expect.map((item) => <li>{item}</li>)}</ul>
+  </section>
+
+  <section class={section}>
+    <h2 class={heading}>Tips</h2>
+    <ul class={listClass}>{tips.map((item) => <li>{item}</li>)}</ul>
+  </section>
+
+  <div class="flex flex-wrap items-center gap-4">
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-navy px-6 py-2 font-semibold text-white no-underline hover:bg-navy-dark hover:text-white max-[820px]:w-full"
+    >
+      {buttonLabel} <Icon name="external" size={16} />
+      <span class="sr-only">(opens in a new tab)</span>
+    </a>
+    {secondaryLink && (
+      <a href={secondaryLink.url} target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 items-center text-[15px] font-semibold">
+        {secondaryLink.label}<span class="sr-only"> (opens in a new tab)</span>
+      </a>
+    )}
+  </div>
+</article>

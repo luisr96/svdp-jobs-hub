@@ -1,7 +1,28 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Placeholder from '../components/Placeholder.astro';
+import ResourceCard from '../components/ResourceCard.astro';
 ---
-<Layout title="Second-Chance Hiring" intro="Employers open to hiring people with a record.">
-  <Placeholder>Honest Jobs resource card coming soon.</Placeholder>
+<Layout
+  title="Second-Chance Hiring"
+  intro="Honest Jobs connects people with a record to employers who believe in second chances. It needs a free account, so we link you straight to it."
+>
+  <ResourceCard
+    name="Honest Jobs"
+    url="https://www.honestjobs.com/for-job-seekers/"
+    buttonLabel="Go to Honest Jobs"
+    whoFor="People with a criminal record, including people who are or were incarcerated. Honest Jobs was started by people with records, for people with records."
+    expect={[
+      'It is free for job seekers.',
+      'You need to create a free account to see and apply for jobs.',
+      'You will be asked about your record. Honest Jobs uses it to show how good a match each job is for you.',
+      'Each employer shows a track record: how many people with felony convictions they have hired.',
+      'There is also a free Resource Center with programs for housing, transportation, food, health care and legal help. You can search it by zip code.',
+    ]}
+    tips={[
+      'Answer questions about your record honestly and the same way each time.',
+      'Practice a short, positive way to talk about your record and what you have done since. Your Job Pathway coach can help.',
+      'Search the Resource Center with your zip code for local help with rides, housing or legal questions.',
+      'Found a job you like? Bring it to your Job Pathway coach for help with your resume and interview.',
+    ]}
+  />
 </Layout>

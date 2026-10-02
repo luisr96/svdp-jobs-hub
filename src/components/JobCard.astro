@@ -2,40 +2,46 @@
 import Icon from './Icon.astro';
 import type { Job } from '../lib/types';
 import { postedAgo } from '../lib/format';
+import { toSnapshot } from '../lib/saved';
 
 interface Props {
   job: Job;
 }
 const { job } = Astro.props;
+// data-field hooks let the Saved Jobs page reuse this markup as a template.
 ---
 <article
   class="rounded-xl border border-card-border bg-white px-[22px] py-5"
+  data-job={JSON.stringify(toSnapshot(job))}
   data-posted={job.postedAt}
   data-has-salary={job.salary ? 'true' : 'false'}
 >
   <div class="flex items-center gap-5 max-[820px]:flex-col max-[820px]:items-start">
     <div class="flex min-w-0 grow flex-col gap-2">
       <div class="flex flex-wrap items-center gap-2">
-        <span class="rounded bg-gold-tint px-2 py-1 text-xs font-bold uppercase tracking-[0.4px] text-navy">{job.source}</span>
-        <span class="text-[13px] text-subtle">{postedAgo(job.postedAt)}</span>
+        <span data-field="source" class="rounded bg-gold-tint px-2 py-1 text-xs font-bold uppercase tracking-[0.4px] text-navy">{job.source}</span>
+        <span data-field="posted" class="text-[13px] text-subtle">{postedAgo(job.postedAt)}</span>
       </div>
-      <h2 class="m-0 text-xl leading-[1.3] font-bold text-navy">{job.title}</h2>
-      <div class="text-[15px] text-ink-2">{job.company}</div>
+      <h2 data-field="title" class="m-0 text-xl leading-[1.3] font-bold text-navy">{job.title}</h2>
+      <div data-field="company" class="text-[15px] text-ink-2">{job.company}</div>
       <div class="flex flex-wrap gap-4 text-sm text-muted">
-        <span>{job.location}</span>
-        {job.jobType && <span>{job.jobType}</span>}
-        {job.salary && <span class="font-semibold text-pay">{job.salary}</span>}
+        <span data-field="location">{job.location}</span>
+        <span data-field="type" hidden={!job.jobType}>{job.jobType}</span>
+        <span data-field="salary" class="font-semibold text-pay" hidden={!job.salary}>{job.salary}</span>
       </div>
     </div>
     <div class="flex shrink-0 items-center gap-2.5">
       <button
         type="button"
+        data-save
+        aria-pressed="false"
         aria-label={`Save ${job.title}`}
-        class="flex size-11 cursor-pointer items-center justify-center rounded-lg border border-input-border bg-white text-navy hover:bg-page"
+        class="flex size-11 cursor-pointer items-center justify-center rounded-lg border border-input-border bg-white text-navy hover:bg-page aria-pressed:border-navy aria-pressed:bg-gold-tint aria-pressed:[&_svg]:fill-current"
       >
         <Icon name="bookmark" size={18} />
       </button>
       <a
+        data-field="link"
         href={job.url}
         target="_blank"
         rel="noopener noreferrer"
@@ -47,3 +53,8 @@ const { job } = Astro.props;
     </div>
   </div>
 </article>
+
+<script>
+  import { wireSaveButtons } from '../scripts/save-buttons';
+  wireSaveButtons(document);
+</script>
