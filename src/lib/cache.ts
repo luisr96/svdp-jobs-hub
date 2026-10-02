@@ -1,14 +1,44 @@
-// Tiny in-memory TTL cache. On a failed refresh it keeps serving the last good value.
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+
+// TTL cache kept in memory and mirrored to .cache/ on disk, so server restarts don't
+// trigger refetches (Remotive allows ~4 calls/day). On a failed refresh it keeps
+// serving the last good value.
+// TODO: on Netlify the filesystem is ephemeral; swap disk storage for Netlify Blobs.
 interface Entry<T> {
   value: T;
   expires: number;
 }
 
-const store = new Map<string, Entry<unknown>>();
+const CACHE_DIR = path.resolve('.cache');
+const memory = new Map<string, Entry<unknown>>();
 const inflight = new Map<string, Promise<unknown>>();
 
+const fileFor = (key: string) => path.join(CACHE_DIR, `${key.replace(/[^a-z0-9-]+/gi, '_')}.json`);
+
+async function readDisk<T>(key: string): Promise<Entry<T> | undefined> {
+  try {
+    return JSON.parse(await readFile(fileFor(key), 'utf8')) as Entry<T>;
+  } catch {
+    return undefined;
+  }
+}
+
+async function writeDisk<T>(key: string, entry: Entry<T>): Promise<void> {
+  try {
+    await mkdir(CACHE_DIR, { recursive: true });
+    await writeFile(fileFor(key), JSON.stringify(entry));
+  } catch (err) {
+    console.error(`[cache] could not write ${key} to disk:`, err);
+  }
+}
+
 export async function cached<T>(key: string, ttlMs: number, load: () => Promise<T>): Promise<T> {
-  const hit = store.get(key) as Entry<T> | undefined;
+  let hit = memory.get(key) as Entry<T> | undefined;
+  if (!hit) {
+    hit = await readDisk<T>(key);
+    if (hit) memory.set(key, hit);
+  }
   if (hit && hit.expires > Date.now()) return hit.value;
 
   // Share one fetch between concurrent requests.
@@ -16,8 +46,10 @@ export async function cached<T>(key: string, ttlMs: number, load: () => Promise<
   if (pending) return pending;
 
   const p = load()
-    .then((value) => {
-      store.set(key, { value, expires: Date.now() + ttlMs });
+    .then(async (value) => {
+      const entry = { value, expires: Date.now() + ttlMs };
+      memory.set(key, entry);
+      await writeDisk(key, entry);
       return value;
     })
     .catch((err) => {

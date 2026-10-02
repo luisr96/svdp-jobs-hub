@@ -1,5 +1,6 @@
 import { XMLParser } from 'fast-xml-parser';
 import type { Job, JobType } from '../types';
+import { remoteLocation, splitPlaces } from '../location';
 
 const FEED_URL = 'https://weworkremotely.com/remote-jobs.rss';
 const SOURCE = 'We Work Remotely';
@@ -63,18 +64,12 @@ function splitTitle(raw: string): { company: string; title: string } {
   return { company: raw.slice(0, i), title: raw.slice(i + 2) };
 }
 
+// Countries come as "🇺🇸 United States of America, 🇫🇷 France, and ..."; fall back to region.
 function formatLocation(region?: string, country?: string): string {
-  // Countries come as "🇺🇸 United States of America, 🇫🇷 France, and ..." — drop flags.
-  const countries = (country ?? '')
-    .split(/,\s*(?:and\s+)?|\s+and\s+/)
-    .map((c) => c.replace(/\p{Regional_Indicator}/gu, '').trim())
-    .filter(Boolean);
-
-  if (countries.length === 1 && countries[0] === 'United States of America') return 'Remote · US only';
-  if (countries.length === 1) return `Remote · ${countries[0]} only`;
-  if (countries.length > 1 && countries.length <= 3) return `Remote · ${countries.join(', ').replace('United States of America', 'US')}`;
-  if (!region || /anywhere/i.test(region)) return countries.length ? 'Remote · Selected countries' : 'Remote · Anywhere';
-  return `Remote · ${region.replace(/^remote\s*[-–:]\s*/i, '')}`;
+  const countries = splitPlaces(country);
+  if (countries.length) return remoteLocation(countries);
+  const r = region?.replace(/^remote\s*[-–:]\s*/i, '').trim();
+  return remoteLocation(r ? [r] : []);
 }
 
 function normalizeType(raw?: string): JobType | null {

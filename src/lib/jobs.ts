@@ -1,16 +1,23 @@
 import { cached } from './cache';
 import type { Job } from './types';
 import { fetchWeWorkRemotely } from './sources/weworkremotely';
+import { fetchRemotive } from './sources/remotive';
+import { fetchJobicy } from './sources/jobicy';
 
-const TTL = 45 * 60 * 1000; // refresh every 45 min
+const MIN = 60 * 1000;
 
 interface Source {
   name: string;
+  ttl: number;
   fetch: () => Promise<Job[]>;
 }
 
-// Remotive and Jobicy get added here as their adapters land.
-const remoteSources: Source[] = [{ name: 'We Work Remotely', fetch: fetchWeWorkRemotely }];
+// Order matters for dedupe: when the same job appears twice, the earlier source wins.
+const remoteSources: Source[] = [
+  { name: 'We Work Remotely', ttl: 45 * MIN, fetch: fetchWeWorkRemotely },
+  { name: 'Remotive', ttl: 6 * 60 * MIN, fetch: fetchRemotive }, // max ~4 calls/day
+  { name: 'Jobicy', ttl: 45 * MIN, fetch: fetchJobicy },
+];
 
 export interface JobResults {
   jobs: Job[];
@@ -19,7 +26,7 @@ export interface JobResults {
 
 export async function getRemoteJobs(): Promise<JobResults> {
   const results = await Promise.allSettled(
-    remoteSources.map((s) => cached(`source:${s.name}`, TTL, s.fetch)),
+    remoteSources.map((s) => cached(`source:${s.name}`, s.ttl, s.fetch)),
   );
 
   const jobs: Job[] = [];
@@ -42,12 +49,22 @@ function dedupe(jobs: Job[]): Job[] {
   const seenKey = new Set<string>();
   return jobs.filter((j) => {
     const url = j.url.replace(/[?#].*$/, '').replace(/\/$/, '').toLowerCase();
-    const key = `${j.title}|${j.company}`.toLowerCase().replace(/\s+/g, ' ').trim();
+    const key = `${normalize(j.title)}|${normalize(j.company)}`;
     if (seenUrl.has(url) || seenKey.has(key)) return false;
     seenUrl.add(url);
     seenKey.add(key);
     return true;
   });
+}
+
+// "Acme, Inc." and "ACME Inc" should match; so should "Sr. Engineer (Remote)" and "Sr Engineer".
+function normalize(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/\(remote[^)]*\)|\bremote\b/g, '')
+    .replace(/\b(inc|llc|ltd|corp|co|gmbh)\b\.?/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
 }
 
 function sortNewest(jobs: Job[]): Job[] {
