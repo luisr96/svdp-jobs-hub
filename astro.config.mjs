@@ -10,5 +10,8 @@ export default defineConfig({
   adapter: netlify({ devFeatures: false }),
   redirects: { "/": "/remote" },
   server: { host: "127.0.0.1" },
+  // Static pages as saved.html (not saved/index.html) so Netlify serves /saved without a
+  // trailing-slash redirect.
+  build: { format: "file" },
   vite: { plugins: [tailwindcss()] },
 });
