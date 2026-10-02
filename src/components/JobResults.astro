@@ -17,7 +17,7 @@ const clearHref = Astro.url.pathname;
 <div class="flex flex-wrap items-center justify-between gap-3">
   <div class="text-sm text-muted">
     <strong class="text-navy">{jobs.length} {jobs.length === 1 ? 'job' : 'jobs'}</strong>
-    {sources.length > 0 && <> from {sourceList}</>} · updated hourly
+    {sources.length > 0 && <> from {sourceList}</>} updated throughout the day
   </div>
   <!-- Belongs to the filter form, so it's kept when filters are submitted. With JS it re-sorts in place. -->
   <label class="flex items-center gap-2 text-sm text-muted">

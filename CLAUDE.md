@@ -32,7 +32,7 @@ A job-listing hub for St. Vincent de Paul Naples' Job Pathway Program. Users are
 - Normalize, filter, and deduplicate (by URL, then title+company) on the server.
 - Cache results and refresh every 30–60 min. Do not fetch on every page load. Remotive asks for at most ~4 calls/day.
 - If one source fails, show the others and log the error. Never break the page.
-- Filters: pass through to a source's own query params where supported (Adzuna, Remotive, Jobicy); otherwise filter locally by keyword on title/tags/description.
+- Filters: run on our cached results on the server (`src/lib/filters.ts`), not as source query params. Per-search API calls would break the caching rule and Remotive's call limit. Categories match on title + the source's own category (not tags; they're noisy). Keyword search covers title, company, category, location and tags.
 
 ## Attribution (required by each board's terms)
 - Every listing links to its original URL and shows the source name.
