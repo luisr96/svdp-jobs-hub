@@ -1,33 +1,69 @@
 ---
 import JobCard from './JobCard.astro';
-import type { JobResults } from '../lib/jobs';
+import type { Job } from '../lib/types';
+import type { Sort } from '../lib/filters';
 
 interface Props {
-  results: JobResults;
-  emptyMessage: string;
+  jobs: Job[]; // already filtered and sorted
+  sources: string[]; // sources that returned data
+  sort: Sort;
+  active: boolean; // any filter changed from its default
+  loadError: string; // shown when no source returned data
 }
-const { results, emptyMessage } = Astro.props;
-const { jobs, sources } = results;
+const { jobs, sources, sort, active, loadError } = Astro.props;
 const sourceList = new Intl.ListFormat('en', { type: 'conjunction' }).format(sources);
+const clearHref = Astro.url.pathname;
 ---
 <div class="flex flex-wrap items-center justify-between gap-3">
-  <div class="text-sm text-muted" aria-live="polite">
+  <div class="text-sm text-muted">
     <strong class="text-navy">{jobs.length} {jobs.length === 1 ? 'job' : 'jobs'}</strong>
     {sources.length > 0 && <> from {sourceList}</>} · updated hourly
   </div>
+  <!-- Belongs to the filter form, so it's kept when filters are submitted. With JS it re-sorts in place. -->
   <label class="flex items-center gap-2 text-sm text-muted">
     Sort
-    <select name="sort" class="h-11 rounded-lg border border-input-border bg-white px-2">
-      <option value="newest">Newest first</option>
-      <option value="salary">Salary listed</option>
+    <select name="sort" form="job-filters" data-sort class="h-11 rounded-lg border border-input-border bg-white px-2">
+      <option value="newest" selected={sort === 'newest'}>Newest first</option>
+      <option value="salary" selected={sort === 'salary'}>Salary listed</option>
     </select>
   </label>
 </div>
 
-<div class="flex flex-col gap-3.5">
-  {jobs.length > 0 ? (
-    jobs.map((job) => <JobCard job={job} />)
-  ) : (
-    <p class="m-0 rounded-xl border border-card-border bg-white p-6 text-muted">{emptyMessage}</p>
+<div class="flex flex-col gap-3.5" data-job-list>
+  {jobs.map((job) => <JobCard job={job} />)}
+  {jobs.length === 0 && (
+    <div class="rounded-xl border border-card-border bg-white p-6 text-muted">
+      {sources.length === 0 ? (
+        <p class="m-0">{loadError}</p>
+      ) : active ? (
+        <p class="m-0">
+          No jobs match these filters. Try fewer filters, or <a href={clearHref} class="font-semibold">clear all filters</a>.
+        </p>
+      ) : (
+        <p class="m-0">There are no jobs to show right now. Please check back later.</p>
+      )}
+    </div>
   )}
 </div>
+
+<script>
+  // Re-sort cards in place (no page reload, focus stays put) and keep the URL in sync.
+  const select = document.querySelector<HTMLSelectElement>('select[data-sort]');
+  const list = document.querySelector<HTMLElement>('[data-job-list]');
+  select?.addEventListener('change', () => {
+    if (!list) return;
+    const cards = [...list.querySelectorAll<HTMLElement>('article[data-posted]')];
+    const newest = (a: HTMLElement, b: HTMLElement) => (b.dataset.posted ?? '').localeCompare(a.dataset.posted ?? '');
+    cards.sort(newest);
+    if (select.value === 'salary') {
+      const paid = (el: HTMLElement) => Number(el.dataset.hasSalary === 'true');
+      cards.sort((a, b) => paid(b) - paid(a));
+    }
+    list.append(...cards);
+
+    const url = new URL(location.href);
+    if (select.value === 'newest') url.searchParams.delete('sort');
+    else url.searchParams.set('sort', select.value);
+    history.replaceState(null, '', url);
+  });
+</script>

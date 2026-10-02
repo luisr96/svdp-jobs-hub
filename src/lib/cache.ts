@@ -1,16 +1,19 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import os from 'node:os';
 import path from 'node:path';
 
 // TTL cache kept in memory and mirrored to .cache/ on disk, so server restarts don't
 // trigger refetches (Remotive allows ~4 calls/day). On a failed refresh it keeps
 // serving the last good value.
-// TODO: on Netlify the filesystem is ephemeral; swap disk storage for Netlify Blobs.
+// TODO: on Netlify the filesystem is ephemeral (only the temp dir is writable and it is
+// per-instance); swap disk storage for Netlify Blobs before launch.
 interface Entry<T> {
   value: T;
   expires: number;
 }
 
-const CACHE_DIR = path.resolve('.cache');
+const ON_SERVERLESS = Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NETLIFY);
+const CACHE_DIR = ON_SERVERLESS ? path.join(os.tmpdir(), 'jobs-cache') : path.resolve('.cache');
 const memory = new Map<string, Entry<unknown>>();
 const inflight = new Map<string, Promise<unknown>>();
 

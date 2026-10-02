@@ -4,8 +4,6 @@ import { fetchWeWorkRemotely } from './sources/weworkremotely';
 import { fetchRemotive } from './sources/remotive';
 import { fetchJobicy } from './sources/jobicy';
 import { fetchAdzuna } from './sources/adzuna';
-import { DEFAULT_AREA, filterByArea, type Area } from './areas';
-
 const MIN = 60 * 1000;
 
 interface Source {
@@ -31,10 +29,8 @@ export interface JobResults {
 const localSources: Source[] = [{ name: 'Adzuna', cacheKey: 'Adzuna:county', ttl: 60 * MIN, fetch: fetchAdzuna }];
 
 export const getRemoteJobs = () => getJobs(remoteSources);
-export async function getLocalJobs(area: Area = DEFAULT_AREA): Promise<JobResults> {
-  const results = await getJobs(localSources);
-  return { ...results, jobs: filterByArea(results.jobs, area) };
-}
+// Unfiltered; the Area filter (Collier by default) is applied in filters.ts.
+export const getLocalJobs = () => getJobs(localSources);
 
 async function getJobs(list: Source[]): Promise<JobResults> {
   const results = await Promise.allSettled(

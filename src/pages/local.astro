@@ -4,23 +4,32 @@ import FilterBar from '../components/FilterBar.astro';
 import JobResults from '../components/JobResults.astro';
 import SelectField from '../components/SelectField.astro';
 import { getLocalJobs } from '../lib/jobs';
-import { AREAS, parseArea } from '../lib/areas';
+import { AREAS } from '../lib/areas';
+import { LOCAL_CATEGORIES, applyFilters, hasActiveFilters, parseFilters } from '../lib/filters';
+import { setJobPageCacheHeaders } from '../lib/cache-headers';
 
-// Read ?area= when rendered on request; static builds fall back to the default (Collier County).
-const area = parseArea(Astro.isPrerendered ? null : Astro.url.searchParams.get('area'));
-const results = await getLocalJobs(area);
+export const prerender = false; // rendered on request so filters work
+
+const filters = parseFilters(Astro.url.searchParams, LOCAL_CATEGORIES);
+const active = hasActiveFilters(filters);
+const { jobs, sources } = await getLocalJobs();
+const shown = applyFilters(jobs, filters, { categories: LOCAL_CATEGORIES, kind: 'local' });
+setJobPageCacheHeaders(Astro.response.headers);
 ---
 <Layout
   title="Local Jobs"
   intro="Jobs in Naples and across Collier County. Click any job to read the full posting and apply on the original site."
 >
-  <FilterBar categories={['Healthcare', 'Retail', 'Hospitality & food service', 'Warehouse & logistics', 'Admin & office']}>
-    <SelectField id="area" name="area" label="Area" options={[...AREAS]} selected={area} />
+  <FilterBar categories={LOCAL_CATEGORIES} filters={filters} active={active}>
+    <SelectField id="area" name="area" label="Area" options={[...AREAS]} selected={filters.area} />
   </FilterBar>
 
   <JobResults
-    results={results}
-    emptyMessage="We couldn't load local jobs right now. Please check back in a little while."
+    jobs={shown}
+    sources={sources}
+    sort={filters.sort}
+    active={active}
+    loadError="We couldn't load local jobs right now. Please check back in a little while."
   />
 
   <footer class="border-t border-card-border pt-4 text-[13px] leading-[1.6] text-subtle">

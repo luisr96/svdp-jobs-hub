@@ -1,12 +1,18 @@
 ---
 import SelectField from './SelectField.astro';
+import type { CategoryDef, Filters } from '../lib/filters';
+import { JOB_TYPES } from '../lib/filters';
 
 interface Props {
-  categories: string[];
+  categories: CategoryDef[];
+  filters: Filters;
+  active: boolean; // any filter changed from its default
 }
-const { categories } = Astro.props;
+const { categories, filters, active } = Astro.props;
+const action = Astro.url.pathname;
 ---
-<form class="rounded-xl border border-card-border bg-white p-[18px]" role="search" onsubmit="return false">
+<!-- Plain GET form: works without JavaScript, and results are shareable/bookmarkable URLs. -->
+<form id="job-filters" method="get" action={action} role="search" aria-label="Filter jobs" class="rounded-xl border border-card-border bg-white p-[18px]">
   <div class="grid grid-cols-1 gap-3 min-[821px]:grid-cols-[minmax(0,2fr)_repeat(3,minmax(0,1fr))]">
     <div class="flex flex-col gap-1.5">
       <label for="q" class="text-[13px] font-semibold text-navy">Search</label>
@@ -14,18 +20,36 @@ const { categories } = Astro.props;
         id="q"
         name="q"
         type="search"
+        value={filters.q}
         placeholder="Job title or keyword, e.g. customer service"
         class="h-11 rounded-lg border border-input-border bg-white px-3 text-[15px]"
       />
     </div>
-    <SelectField id="cat" name="category" label="Category" options={[{ value: '', label: 'All categories' }, ...categories]} />
+    <SelectField
+      id="cat"
+      name="category"
+      label="Category"
+      options={[{ value: '', label: 'All categories' }, ...categories]}
+      selected={filters.category}
+    />
     <SelectField
       id="type"
       name="type"
       label="Job type"
-      options={[{ value: '', label: 'Any' }, 'Full-time', 'Part-time', 'Contract']}
+      options={[{ value: '', label: 'Any' }, ...JOB_TYPES]}
+      selected={filters.type}
     />
     <!-- Page-specific last filter: "Open to" on Remote Work, "Area" on Local Jobs. -->
     <slot />
+  </div>
+
+  <div class="mt-4 flex flex-wrap items-center gap-4">
+    <button
+      type="submit"
+      class="h-11 cursor-pointer rounded-lg bg-navy px-6 font-semibold text-white hover:bg-navy-dark max-[820px]:w-full"
+    >
+      Show jobs
+    </button>
+    {active && <a href={action} class="inline-flex min-h-11 items-center text-[15px] font-semibold">Clear filters</a>}
   </div>
 </form>
