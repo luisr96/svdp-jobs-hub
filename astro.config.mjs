@@ -1,13 +1,14 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
-import netlify from '@astrojs/netlify';
-import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from "astro/config";
+import netlify from "@astrojs/netlify";
+import tailwindcss from "@tailwindcss/vite";
 
 // Pages are static by default; job pages opt out (prerender = false) so filters work.
 export default defineConfig({
   // devFeatures: false skips emulating Netlify (edge functions, images, env vars) during
   // `astro dev`. We use none of them, and the edge-functions emulator fails to start on Windows.
   adapter: netlify({ devFeatures: false }),
-  redirects: { '/': '/remote' },
+  redirects: { "/": "/remote" },
+  server: { host: "127.0.0.1" },
   vite: { plugins: [tailwindcss()] },
 });
