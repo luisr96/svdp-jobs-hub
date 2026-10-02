@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+/* Brand tokens. Placeholders until we get official SVdP hex codes. */
+@theme {
+  --font-serif: "Source Serif 4", Georgia, serif;
+  --font-sans: "Public Sans", system-ui, sans-serif;
+
+  --color-navy: #14284b;
+  --color-navy-dark: #0b1830;
+  --color-navy-line: #3a4f75;
+  --color-gold: #c9a227;
+  --color-gold-light: #d9c27a;
+  --color-gold-tint: #f3e9c6;
+  --color-page: #f6f4ee;
+  --color-card-border: #e2ded2;
+  --color-input-border: #c9c4b5;
+  --color-ink: #1b2433;
+  --color-ink-2: #2e3746;
+  --color-muted: #4a5568;
+  --color-subtle: #5c6575;
+  --color-side-text: #dce3ef;
+  --color-pay: #1f5130;
+}
+
+@layer base {
+  body {
+    @apply bg-page font-sans text-ink;
+  }
+  a {
+    @apply text-navy hover:text-navy-dark;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+}

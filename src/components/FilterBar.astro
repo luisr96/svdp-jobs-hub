@@ -1,0 +1,38 @@
+---
+const field = 'h-11 rounded-lg border border-input-border bg-white text-[15px]';
+const label = 'text-[13px] font-semibold text-navy';
+---
+<form class="rounded-xl border border-card-border bg-white p-[18px]" role="search" onsubmit="return false">
+  <div class="grid grid-cols-1 gap-3 min-[821px]:grid-cols-[minmax(0,2fr)_repeat(3,minmax(0,1fr))]">
+    <div class="flex flex-col gap-1.5">
+      <label for="q" class={label}>Search</label>
+      <input id="q" name="q" type="search" placeholder="Job title or keyword, e.g. customer service" class:list={[field, 'px-3']} />
+    </div>
+    <div class="flex flex-col gap-1.5">
+      <label for="cat" class={label}>Category</label>
+      <select id="cat" name="category" class:list={[field, 'px-2.5']}>
+        <option value="">All categories</option>
+        <option>Customer support</option>
+        <option>Admin &amp; data entry</option>
+        <option>Sales &amp; marketing</option>
+        <option>Tech</option>
+      </select>
+    </div>
+    <div class="flex flex-col gap-1.5">
+      <label for="type" class={label}>Job type</label>
+      <select id="type" name="type" class:list={[field, 'px-2.5']}>
+        <option value="">Any</option>
+        <option>Full-time</option>
+        <option>Part-time</option>
+        <option>Contract</option>
+      </select>
+    </div>
+    <div class="flex flex-col gap-1.5">
+      <label for="where" class={label}>Open to</label>
+      <select id="where" name="where" class:list={[field, 'px-2.5']}>
+        <option value="us">US applicants</option>
+        <option value="anywhere">Anywhere</option>
+      </select>
+    </div>
+  </div>
+</form>

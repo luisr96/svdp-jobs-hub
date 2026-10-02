@@ -1,0 +1,38 @@
+---
+import Layout from '../layouts/Layout.astro';
+import FilterBar from '../components/FilterBar.astro';
+import JobCard from '../components/JobCard.astro';
+import { sampleRemoteJobs } from '../lib/sample-jobs';
+
+const jobs = sampleRemoteJobs;
+---
+<Layout
+  title="Remote Work"
+  intro="Work-from-home jobs from trusted remote boards. Click any job to read the full posting and apply on the original site."
+>
+  <FilterBar />
+
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div class="text-sm text-muted" aria-live="polite">
+      <strong class="text-navy">{jobs.length} jobs</strong> from We Work Remotely, Remotive and Jobicy · updated hourly
+    </div>
+    <label class="flex items-center gap-2 text-sm text-muted">
+      Sort
+      <select name="sort" class="h-11 rounded-lg border border-input-border bg-white px-2">
+        <option value="newest">Newest first</option>
+        <option value="salary">Salary listed</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="flex flex-col gap-3.5">
+    {jobs.map((job) => <JobCard job={job} />)}
+  </div>
+
+  <footer class="border-t border-card-border pt-4 text-[13px] leading-[1.6] text-subtle">
+    Listings come from <a href="https://weworkremotely.com/">We Work Remotely</a>,
+    <a href="https://remotive.com/">Remotive</a> and <a href="https://jobicy.com/">Jobicy</a> and link to the original
+    posting. Remotive jobs appear 24 hours after posting. Never pay to apply for a job — if a listing asks for money,
+    report it to your coach.
+  </footer>
+</Layout>

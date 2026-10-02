@@ -1,0 +1,41 @@
+---
+import Icon from './Icon.astro';
+import { navItems } from '../lib/nav';
+
+const current = Astro.url.pathname.replace(/\/$/, '');
+---
+<aside class="flex flex-col gap-7 bg-navy px-5 py-7 text-white min-[821px]:sticky min-[821px]:top-0 min-[821px]:h-screen">
+  <div class="flex flex-col gap-1">
+    <div class="font-serif text-[22px] font-bold tracking-[0.2px]">Jobs Hub</div>
+    <div class="text-[13px] text-gold-light">St. Vincent de Paul Naples · Job Pathway Program</div>
+  </div>
+
+  <nav aria-label="Job categories">
+    <ul class="m-0 flex list-none gap-1.5 overflow-x-auto p-0 max-[820px]:flex-row min-[821px]:flex-col">
+      {navItems.map((item) => {
+        const active = current === item.href;
+        return (
+          <li class="shrink-0">
+            <a
+              href={item.href}
+              aria-current={active ? 'page' : undefined}
+              class:list={[
+                'flex min-h-11 items-center gap-3 whitespace-nowrap rounded-lg px-3.5 py-3 no-underline',
+                active ? 'bg-gold font-bold text-navy hover:text-navy' : 'text-white hover:bg-white/10 hover:text-white',
+              ]}
+            >
+              <Icon name={item.icon} />
+              {item.label}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </nav>
+
+  <div class="mt-auto flex flex-col gap-2 rounded-[10px] border border-navy-line p-4 max-[820px]:hidden">
+    <div class="text-sm font-bold">Need help applying?</div>
+    <p class="m-0 text-[13px] leading-normal text-side-text">Bring a listing to your Job Pathway coach for resume and interview help.</p>
+    <a href="#" class="text-[13px] font-semibold text-gold-light hover:text-white">Contact the program</a>
+  </div>
+</aside>

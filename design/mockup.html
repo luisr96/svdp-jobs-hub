@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Jobs Hub – Remote Work</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&amp;family=Public+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#F6F4EE;font-family:'Public Sans',system-ui,sans-serif;color:#1B2433}
+a{color:#14284B}a:hover{color:#0B1830}
+.shell{display:grid;grid-template-columns:260px minmax(0,1fr);min-height:100vh}
+.filters{display:grid;grid-template-columns:minmax(0,2fr) repeat(3,minmax(0,1fr));gap:12px}
+.card-row{display:flex;gap:20px;align-items:center}
+@media (max-width:820px){
+.shell{grid-template-columns:minmax(0,1fr)}
+.side{position:static !important;height:auto !important}
+.side-nav{flex-direction:row !important;overflow-x:auto}
+.side-extra{display:none !important}
+.filters{grid-template-columns:minmax(0,1fr)}
+.card-row{flex-direction:column}
+.main{padding:20px 16px !important}
+}
+</style>
+</helmet>
+<div class="shell">
+
+<aside class="side" style="background:#14284B;color:#FFFFFF;padding:28px 20px;display:flex;flex-direction:column;gap:28px;position:sticky;top:0;height:100vh;box-sizing:border-box">
+<div style="display:flex;flex-direction:column;gap:4px">
+<div style="font-family:'Source Serif 4',Georgia,serif;font-size:22px;font-weight:700;letter-spacing:0.2px">Jobs Hub</div>
+<div style="font-size:13px;color:#D9C27A">St. Vincent de Paul Naples · Job Pathway Program</div>
+</div>
+<nav aria-label="Job categories">
+<div class="side-nav" style="display:flex;flex-direction:column;gap:6px">
+<a href="#" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:8px;background:#C9A227;color:#14284B;font-weight:700;text-decoration:none;min-height:44px;box-sizing:border-box" aria-current="page">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-7h6v7"/></svg>
+Remote Work</a>
+<a href="#" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:8px;color:#FFFFFF;text-decoration:none;min-height:44px;box-sizing:border-box">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.1-7-11a7 7 0 0 1 14 0c0 4.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+Local Jobs</a>
+<a href="#" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:8px;color:#FFFFFF;text-decoration:none;min-height:44px;box-sizing:border-box">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+Workers 50+</a>
+<a href="#" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:8px;color:#FFFFFF;text-decoration:none;min-height:44px;box-sizing:border-box">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16"/><path d="m14 6 6 6-6 6"/></svg>
+Second-Chance Hiring</a>
+<a href="#" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:8px;color:#FFFFFF;text-decoration:none;min-height:44px;box-sizing:border-box">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg>
+Saved Jobs</a>
+</div>
+</nav>
+<div class="side-extra" style="margin-top:auto;padding:16px;border:1px solid #3A4F75;border-radius:10px;display:flex;flex-direction:column;gap:8px">
+<div style="font-weight:700;font-size:14px">Need help applying?</div>
+<div style="font-size:13px;line-height:1.5;color:#DCE3EF">Bring a listing to your Job Pathway coach for resume and interview help.</div>
+<a href="#" style="color:#D9C27A;font-size:13px;font-weight:600">Contact the program</a>
+</div>
+</aside>
+
+<main class="main" style="padding:36px 44px;display:flex;flex-direction:column;gap:24px;max-width:1040px;box-sizing:border-box;width:100%">
+<header style="display:flex;flex-direction:column;gap:8px">
+<h1 style="margin:0;font-family:'Source Serif 4',Georgia,serif;font-size:36px;font-weight:700;color:#14284B">Remote Work</h1>
+<p style="margin:0;font-size:16px;line-height:1.55;color:#4A5568;max-width:640px">Work-from-home jobs from trusted remote boards. Click any job to read the full posting and apply on the original site.</p>
+</header>
+
+<form style="background:#FFFFFF;border:1px solid #E2DED2;border-radius:12px;padding:18px" onsubmit="return false">
+<div class="filters">
+<div style="display:flex;flex-direction:column;gap:6px">
+<label for="q" style="font-size:13px;font-weight:600;color:#14284B">Search</label>
+<input id="q" type="search" placeholder="Job title or keyword, e.g. customer service" style="height:44px;border:1px solid #C9C4B5;border-radius:8px;padding:0 12px;font:inherit;font-size:15px">
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<label for="cat" style="font-size:13px;font-weight:600;color:#14284B">Category</label>
+<select id="cat" style="height:44px;border:1px solid #C9C4B5;border-radius:8px;padding:0 10px;font:inherit;font-size:15px;background:#FFFFFF"><option>All categories</option><option>Customer support</option><option>Admin &amp; data entry</option><option>Sales &amp; marketing</option><option>Tech</option></select>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<label for="type" style="font-size:13px;font-weight:600;color:#14284B">Job type</label>
+<select id="type" style="height:44px;border:1px solid #C9C4B5;border-radius:8px;padding:0 10px;font:inherit;font-size:15px;background:#FFFFFF"><option>Any</option><option>Full-time</option><option>Part-time</option><option>Contract</option></select>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<label for="where" style="font-size:13px;font-weight:600;color:#14284B">Open to</label>
+<select id="where" style="height:44px;border:1px solid #C9C4B5;border-radius:8px;padding:0 10px;font:inherit;font-size:15px;background:#FFFFFF"><option>US applicants</option><option>Anywhere</option></select>
+</div>
+</div>
+</form>
+
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+<div style="font-size:14px;color:#4A5568"><strong style="color:#14284B">{{count}} jobs</strong> from We Work Remotely, Remotive and Jobicy · updated hourly</div>
+<label style="font-size:14px;color:#4A5568;display:flex;align-items:center;gap:8px">Sort
+<select style="height:40px;border:1px solid #C9C4B5;border-radius:8px;padding:0 8px;font:inherit;background:#FFFFFF"><option>Newest first</option><option>Salary listed</option></select>
+</label>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<sc-for list="{{jobs}}" as="job" hint-placeholder-count="5">
+<article style="background:#FFFFFF;border:1px solid #E2DED2;border-radius:12px;padding:20px 22px">
+<div class="card-row">
+<div style="flex-grow:1;display:flex;flex-direction:column;gap:8px;min-width:0">
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+<span style="font-size:12px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;color:#14284B;background:#F3E9C6;padding:4px 8px;border-radius:4px">{{job.source}}</span>
+<span style="font-size:13px;color:#5C6575">{{job.posted}}</span>
+</div>
+<h2 style="margin:0;font-size:20px;font-weight:700;color:#14284B;line-height:1.3">{{job.title}}</h2>
+<div style="font-size:15px;color:#2E3746">{{job.company}}</div>
+<div style="display:flex;gap:16px;flex-wrap:wrap;font-size:14px;color:#4A5568">
+<span>{{job.where}}</span><span>{{job.type}}</span><span style="font-weight:600;color:#1F5130">{{job.pay}}</span>
+</div>
+</div>
+<div style="display:flex;gap:10px;align-items:center;flex-shrink:0">
+<button type="button" aria-label="Save this job" style="width:44px;height:44px;border:1px solid #C9C4B5;border-radius:8px;background:#FFFFFF;color:#14284B;cursor:pointer;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg></button>
+<a href="#" aria-label="View job on {{job.source}}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;width:140px;box-sizing:border-box;border-radius:8px;background:#14284B;color:#FFFFFF;font-weight:600;text-decoration:none;white-space:nowrap">View job
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+</div>
+</div>
+</article>
+</sc-for>
+</div>
+
+<footer style="font-size:13px;color:#5C6575;line-height:1.6;border-top:1px solid #E2DED2;padding-top:16px">Listings come from <a href="#">We Work Remotely</a>, <a href="#">Remotive</a> and <a href="#">Jobicy</a> and link to the original posting. Remotive jobs appear 24 hours after posting. Never pay to apply for a job — if a listing asks for money, report it to your coach.</footer>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1180}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var jobs = [
+      { source: 'Remotive', posted: 'Posted 1 day ago', title: '[Sample] Customer Support Specialist', company: '[Company name]', where: 'Remote · US only', type: 'Full-time', pay: '[Pay if listed]' },
+      { source: 'WWR', posted: 'Posted 2 days ago', title: '[Sample] Virtual Administrative Assistant', company: '[Company name]', where: 'Remote · Anywhere', type: 'Part-time', pay: '' },
+      { source: 'Jobicy', posted: 'Posted 3 days ago', title: '[Sample] Data Entry Clerk', company: '[Company name]', where: 'Remote · US only', type: 'Contract', pay: '[Pay if listed]' },
+      { source: 'WWR', posted: 'Posted 4 days ago', title: '[Sample] Inside Sales Representative', company: '[Company name]', where: 'Remote · US only', type: 'Full-time', pay: '' }
+    ];
+    return { jobs: jobs, count: '[N]' };
+  }
+}
+</script>
+</body>
+</html>
