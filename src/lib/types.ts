@@ -12,4 +12,5 @@ export interface Job {
   url: string;
   postedAt: string; // ISO 8601
   category?: string;
+  tags?: string[]; // used for local keyword filtering when a source has no search params
 }
