@@ -17,11 +17,12 @@ A job-listing hub for St. Vincent de Paul Naples' Job Pathway Program. Users are
 ## Layout
 - Left sidebar (sticky): Remote Work, Local Jobs, Workers 50+, Second-Chance Hiring, Saved Jobs, plus a "Need help applying?" box. On narrow screens it becomes a horizontal tab row.
 - Each category is its own page with: title + one-line intro, filter bar (search, category, job type, open-to), result count + sort, list of job cards, attribution footer.
+- Local Jobs replaces "open-to" with a single-select **Area** filter: Collier County (default), Naples area, Immokalee, Include Lee County. Single-select on purpose (simpler for our users); no multi-select.
 - Job card: source badge, posted date, title, company, location, job type, pay (only if listed), save button (icon, 44px), "View job" button (fixed 140px width, links to original posting, `aria-label="View job on <Source>"`). Buttons vertically centered so they line up across cards.
 
 ## Category → data source
 - **Remote Work**: We Work Remotely (RSS), Remotive (API), Jobicy (API, `geo=usa`). Himalayas later.
-- **Local Jobs**: Adzuna API (existing board). Credentials in `.env` as `ADZUNA_APP_ID`, `ADZUNA_APP_KEY`.
+- **Local Jobs**: Adzuna API (existing board). Credentials in `.env` as `ADZUNA_APP_ID`, `ADZUNA_APP_KEY`. Query by county (Collier, Lee), not radius. Adzuna's predicted salaries (`salary_is_predicted`) are estimates, so don't show them.
 - **Workers 50+** (AARP) and **Second-Chance Hiring** (Honest Jobs): no public feeds. Build these as resource-card pages: who the board is for, what to expect (e.g. "free account required"), a few tips, and a button to the site.
 - **Saved Jobs**: stored in the browser (localStorage). No accounts.
 

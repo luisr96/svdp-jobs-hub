@@ -13,4 +13,6 @@ export interface Job {
   postedAt: string; // ISO 8601
   category?: string;
   tags?: string[]; // used for local keyword filtering when a source has no search params
+  county?: string; // local jobs only, for the Area filter
+  city?: string;
 }

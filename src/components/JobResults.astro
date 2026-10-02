@@ -1,0 +1,33 @@
+---
+import JobCard from './JobCard.astro';
+import type { JobResults } from '../lib/jobs';
+
+interface Props {
+  results: JobResults;
+  emptyMessage: string;
+}
+const { results, emptyMessage } = Astro.props;
+const { jobs, sources } = results;
+const sourceList = new Intl.ListFormat('en', { type: 'conjunction' }).format(sources);
+---
+<div class="flex flex-wrap items-center justify-between gap-3">
+  <div class="text-sm text-muted" aria-live="polite">
+    <strong class="text-navy">{jobs.length} {jobs.length === 1 ? 'job' : 'jobs'}</strong>
+    {sources.length > 0 && <> from {sourceList}</>} · updated hourly
+  </div>
+  <label class="flex items-center gap-2 text-sm text-muted">
+    Sort
+    <select name="sort" class="h-11 rounded-lg border border-input-border bg-white px-2">
+      <option value="newest">Newest first</option>
+      <option value="salary">Salary listed</option>
+    </select>
+  </label>
+</div>
+
+<div class="flex flex-col gap-3.5">
+  {jobs.length > 0 ? (
+    jobs.map((job) => <JobCard job={job} />)
+  ) : (
+    <p class="m-0 rounded-xl border border-card-border bg-white p-6 text-muted">{emptyMessage}</p>
+  )}
+</div>

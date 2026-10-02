@@ -1,0 +1,22 @@
+---
+interface Option {
+  value: string;
+  label: string;
+}
+
+interface Props {
+  id: string;
+  name: string;
+  label: string;
+  options: (Option | string)[];
+  selected?: string;
+}
+const { id, name, label, options, selected } = Astro.props;
+const opts = options.map((o) => (typeof o === 'string' ? { value: o, label: o } : o));
+---
+<div class="flex flex-col gap-1.5">
+  <label for={id} class="text-[13px] font-semibold text-navy">{label}</label>
+  <select {id} {name} class="h-11 rounded-lg border border-input-border bg-white px-2.5 text-[15px]">
+    {opts.map((o) => <option value={o.value} selected={o.value === selected}>{o.label}</option>)}
+  </select>
+</div>

@@ -1,41 +1,29 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import FilterBar from '../components/FilterBar.astro';
-import JobCard from '../components/JobCard.astro';
+import JobResults from '../components/JobResults.astro';
+import SelectField from '../components/SelectField.astro';
 import { getRemoteJobs } from '../lib/jobs';
 
-const { jobs, sources } = await getRemoteJobs();
-const sourceList = new Intl.ListFormat('en', { type: 'conjunction' }).format(sources);
+const results = await getRemoteJobs();
 ---
 <Layout
   title="Remote Work"
   intro="Work-from-home jobs from trusted remote boards. Click any job to read the full posting and apply on the original site."
 >
-  <FilterBar />
+  <FilterBar categories={['Customer support', 'Admin & data entry', 'Sales & marketing', 'Tech']}>
+    <SelectField
+      id="where"
+      name="where"
+      label="Open to"
+      options={[{ value: 'us', label: 'US applicants' }, { value: 'anywhere', label: 'Anywhere' }]}
+    />
+  </FilterBar>
 
-  <div class="flex flex-wrap items-center justify-between gap-3">
-    <div class="text-sm text-muted" aria-live="polite">
-      <strong class="text-navy">{jobs.length} {jobs.length === 1 ? 'job' : 'jobs'}</strong>
-      {sources.length > 0 && <> from {sourceList}</>} · updated hourly
-    </div>
-    <label class="flex items-center gap-2 text-sm text-muted">
-      Sort
-      <select name="sort" class="h-11 rounded-lg border border-input-border bg-white px-2">
-        <option value="newest">Newest first</option>
-        <option value="salary">Salary listed</option>
-      </select>
-    </label>
-  </div>
-
-  <div class="flex flex-col gap-3.5">
-    {jobs.length > 0 ? (
-      jobs.map((job) => <JobCard job={job} />)
-    ) : (
-      <p class="m-0 rounded-xl border border-card-border bg-white p-6 text-muted">
-        We couldn't load remote jobs right now. Please check back in a little while.
-      </p>
-    )}
-  </div>
+  <JobResults
+    results={results}
+    emptyMessage="We couldn't load remote jobs right now. Please check back in a little while."
+  />
 
   <footer class="border-t border-card-border pt-4 text-[13px] leading-[1.6] text-subtle">
     Listings come from <a href="https://weworkremotely.com/">We Work Remotely</a>,

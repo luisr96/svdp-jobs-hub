@@ -3,11 +3,14 @@ import type { Job } from './types';
 import { fetchWeWorkRemotely } from './sources/weworkremotely';
 import { fetchRemotive } from './sources/remotive';
 import { fetchJobicy } from './sources/jobicy';
+import { fetchAdzuna } from './sources/adzuna';
+import { DEFAULT_AREA, filterByArea, type Area } from './areas';
 
 const MIN = 60 * 1000;
 
 interface Source {
   name: string;
+  cacheKey?: string; // defaults to name
   ttl: number;
   fetch: () => Promise<Job[]>;
 }
@@ -24,15 +27,24 @@ export interface JobResults {
   sources: string[]; // sources that returned data
 }
 
-export async function getRemoteJobs(): Promise<JobResults> {
+// Cache key "Adzuna:county" so the switch from radius to county queries doesn't reuse old cached data.
+const localSources: Source[] = [{ name: 'Adzuna', cacheKey: 'Adzuna:county', ttl: 60 * MIN, fetch: fetchAdzuna }];
+
+export const getRemoteJobs = () => getJobs(remoteSources);
+export async function getLocalJobs(area: Area = DEFAULT_AREA): Promise<JobResults> {
+  const results = await getJobs(localSources);
+  return { ...results, jobs: filterByArea(results.jobs, area) };
+}
+
+async function getJobs(list: Source[]): Promise<JobResults> {
   const results = await Promise.allSettled(
-    remoteSources.map((s) => cached(`source:${s.name}`, s.ttl, s.fetch)),
+    list.map((s) => cached(`source:${s.cacheKey ?? s.name}`, s.ttl, s.fetch)),
   );
 
   const jobs: Job[] = [];
   const sources: string[] = [];
   results.forEach((r, i) => {
-    const name = remoteSources[i].name;
+    const name = list[i].name;
     if (r.status === 'fulfilled') {
       jobs.push(...r.value);
       sources.push(name);

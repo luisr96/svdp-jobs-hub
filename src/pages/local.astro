@@ -1,7 +1,30 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Placeholder from '../components/Placeholder.astro';
+import FilterBar from '../components/FilterBar.astro';
+import JobResults from '../components/JobResults.astro';
+import SelectField from '../components/SelectField.astro';
+import { getLocalJobs } from '../lib/jobs';
+import { AREAS, parseArea } from '../lib/areas';
+
+// Read ?area= when rendered on request; static builds fall back to the default (Collier County).
+const area = parseArea(Astro.isPrerendered ? null : Astro.url.searchParams.get('area'));
+const results = await getLocalJobs(area);
 ---
-<Layout title="Local Jobs" intro="Jobs in and around Naples from trusted local boards.">
-  <Placeholder>Local listings from Adzuna will appear here.</Placeholder>
+<Layout
+  title="Local Jobs"
+  intro="Jobs in Naples and across Collier County. Click any job to read the full posting and apply on the original site."
+>
+  <FilterBar categories={['Healthcare', 'Retail', 'Hospitality & food service', 'Warehouse & logistics', 'Admin & office']}>
+    <SelectField id="area" name="area" label="Area" options={[...AREAS]} selected={area} />
+  </FilterBar>
+
+  <JobResults
+    results={results}
+    emptyMessage="We couldn't load local jobs right now. Please check back in a little while."
+  />
+
+  <footer class="border-t border-card-border pt-4 text-[13px] leading-[1.6] text-subtle">
+    Jobs by <a href="https://www.adzuna.com/">Adzuna</a>. Each listing links to the original posting. Never pay to
+    apply for a job — if a listing asks for money, report it to your coach.
+  </footer>
 </Layout>
