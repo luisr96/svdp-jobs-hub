@@ -2,7 +2,7 @@
 import Icon from './Icon.astro';
 import { navItems } from '../lib/nav';
 
-const current = Astro.url.pathname.replace(/\/$/, '');
+const current = Astro.url.pathname.replace(/(\.html|\/)$/, '');
 ---
 <aside class="flex flex-col gap-7 bg-navy px-5 py-7 text-white min-[821px]:sticky min-[821px]:top-0 min-[821px]:h-screen">
   <div class="flex flex-col gap-1">
