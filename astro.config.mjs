@@ -8,7 +8,7 @@ export default defineConfig({
   // devFeatures: false skips emulating Netlify (edge functions, images, env vars) during
   // `astro dev`. We use none of them, and the edge-functions emulator fails to start on Windows.
   adapter: netlify({ devFeatures: false }),
-  redirects: { "/": "/remote" },
+  redirects: { "/": "/local" },
   server: { host: "127.0.0.1" },
   // Static pages as saved.html (not saved/index.html) so Netlify serves /saved without a
   // trailing-slash redirect.

@@ -67,6 +67,7 @@ function toJob(j: AdzunaJob): Job[] {
       remote: false,
       jobType: j.contract_type === 'contract' ? 'Contract' : normalizeTime(j.contract_time),
       salary: formatSalary(j),
+      payRank: formatSalary(j) ? annualPay(j.salary_max ?? j.salary_min!) : undefined,
       url: j.redirect_url,
       postedAt: Number.isNaN(created.getTime()) ? new Date().toISOString() : created.toISOString(),
       category: j.category?.label?.replace(/ Jobs$/, ''),
@@ -84,7 +85,10 @@ function normalizeTime(t?: string): JobType | null {
 
 // Adzuna titles can contain <strong> highlight tags and are sometimes ALL CAPS.
 function tidyTitle(raw: string): string {
-  const t = raw.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+  const t = raw
+    .replace(/<[^>]+>/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
   if (t !== t.toUpperCase() || !/[A-Z]/.test(t)) return t;
   return t.toLowerCase().replace(/\b([a-z])/g, (c) => c.toUpperCase());
 }
@@ -96,6 +100,10 @@ function formatLocation(loc: AdzunaJob['location']): string {
   const state = area[1] === 'Florida' ? 'FL' : area[1];
   if (city && state) return `${city}, ${state}`;
   return loc?.display_name ?? 'Southwest Florida';
+}
+
+function annualPay(n: number): number {
+  return n < 200 ? n * 2080 : n;
 }
 
 // Only show pay the employer actually listed; Adzuna's predicted salaries are estimates.

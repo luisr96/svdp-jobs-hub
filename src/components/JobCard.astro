@@ -14,7 +14,7 @@ const { job } = Astro.props;
   class="rounded-xl border border-card-border bg-white px-[22px] py-5"
   data-job={JSON.stringify(toSnapshot(job))}
   data-posted={job.postedAt}
-  data-has-salary={job.salary ? 'true' : 'false'}
+  data-pay={job.payRank ?? (job.salary ? 0 : -1)}
 >
   <div class="flex items-center gap-5 max-[820px]:flex-col max-[820px]:items-start">
     <div class="flex min-w-0 grow flex-col gap-2">

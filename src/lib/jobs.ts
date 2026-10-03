@@ -17,7 +17,7 @@ interface Source {
 const remoteSources: Source[] = [
   { name: 'We Work Remotely', ttl: 45 * MIN, fetch: fetchWeWorkRemotely },
   { name: 'Remotive', ttl: 6 * 60 * MIN, fetch: fetchRemotive }, // max ~4 calls/day
-  { name: 'Jobicy', ttl: 45 * MIN, fetch: fetchJobicy },
+  { name: 'Jobicy', cacheKey: 'Jobicy:pay2', ttl: 45 * MIN, fetch: fetchJobicy },
 ];
 
 export interface JobResults {
@@ -25,8 +25,9 @@ export interface JobResults {
   sources: string[]; // sources that returned data
 }
 
-// Cache key "Adzuna:county" so the switch from radius to county queries doesn't reuse old cached data.
-const localSources: Source[] = [{ name: 'Adzuna', cacheKey: 'Adzuna:county', ttl: 60 * MIN, fetch: fetchAdzuna }];
+// Cache keys change when the Job shape changes, so old cached data isn't reused
+// (":county" for the switch from radius to county queries, ":pay" for payRank).
+const localSources: Source[] = [{ name: 'Adzuna', cacheKey: 'Adzuna:county:pay', ttl: 60 * MIN, fetch: fetchAdzuna }];
 
 export const getRemoteJobs = () => getJobs(remoteSources);
 // Unfiltered; the Area filter (Collier by default) is applied in filters.ts.

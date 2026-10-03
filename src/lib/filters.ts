@@ -14,7 +14,8 @@ export const REMOTE_CATEGORIES: CategoryDef[] = [
   {
     value: 'customer-support',
     label: 'Customer support',
-    match: /customer (support|service|success|care|experience)|support (specialist|agent|representative)|call center|help ?desk/i,
+    match:
+      /customer (support|service|success|care|experience)|support (specialist|agent|representative)|call center|help ?desk/i,
   },
   {
     value: 'admin',
@@ -121,9 +122,14 @@ function isOpenToUs(j: Job): boolean {
   return /\bUS\b|Anywhere|North(ern)? America|\bAmericas\b/i.test(j.location);
 }
 
+// Ranked pay high to low, then free text/other currencies), then no pay listed.
+function payOrder(j: Job): number {
+  return j.payRank ?? (j.salary ? 0 : -1);
+}
+
 export function sortJobs(jobs: Job[], sort: Sort): Job[] {
   const byNewest = (a: Job, b: Job) => b.postedAt.localeCompare(a.postedAt);
   const sorted = [...jobs].sort(byNewest);
-  if (sort === 'salary') sorted.sort((a, b) => Number(Boolean(b.salary)) - Number(Boolean(a.salary)));
+  if (sort === 'salary') sorted.sort((a, b) => payOrder(b) - payOrder(a));
   return sorted;
 }

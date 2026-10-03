@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import FilterBar from '../components/FilterBar.astro';
 import JobResults from '../components/JobResults.astro';
 import SelectField from '../components/SelectField.astro';
+import ResourceCard from '../components/ResourceCard.astro';
 import { getLocalJobs } from '../lib/jobs';
 import { AREAS } from '../lib/areas';
 import { LOCAL_CATEGORIES, applyFilters, hasActiveFilters, parseFilters } from '../lib/filters';
@@ -20,6 +21,24 @@ setJobPageCacheHeaders(Astro.response.headers);
   title="Local Jobs"
   intro="Jobs in Naples and across Collier County. Click any job to read the full posting and apply on the original site."
 >
+  <ResourceCard
+    name="Adzuna"
+    whoFor="Anyone looking for work in person in Naples, Immokalee and the rest of Collier County. Adzuna gathers local job postings from many employers and job sites in one place."
+    expect={[
+      'The jobs are listed below. Use the filters to narrow them by keyword, kind of work, job type or area.',
+      'Jobs in Collier County show first. Choose "Include Lee County" under Area to add jobs in Fort Myers, Cape Coral and Bonita Springs.',
+      'The list refreshes throughout the day.',
+      'Clicking "View job" opens the original posting, where you apply. Some employers may ask you to create a free account.',
+      'Pay is shown only when the employer lists it.',
+    ]}
+    tips={[
+      'Try a simple keyword like "cashier", "driver" or "housekeeping".',
+      'Tap the bookmark on a job to save it, then find it later under Saved Jobs.',
+      'Real employers never ask you to pay, buy equipment up front, or share bank details before you are hired.',
+      'Found a job you like? Bring it to your Job Pathway coach for help with your resume and interview.',
+    ]}
+  />
+
   <FilterBar categories={LOCAL_CATEGORIES} filters={filters} active={active}>
     <SelectField id="area" name="area" label="Area" options={[...AREAS]} selected={filters.area} />
   </FilterBar>

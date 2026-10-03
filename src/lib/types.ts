@@ -9,6 +9,7 @@ export interface Job {
   remote: boolean;
   jobType: JobType | null;
   salary?: string;
+  payRank?: number; // top of the pay range as yearly dollars, for the "Highest pay" sort
   url: string;
   postedAt: string; // ISO 8601
   category?: string;

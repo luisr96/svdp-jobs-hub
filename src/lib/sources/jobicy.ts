@@ -38,6 +38,7 @@ export async function fetchJobicy(): Promise<Job[]> {
         remote: true,
         jobType: normalizeType(j.jobType?.[0]),
         salary: formatSalary(j),
+        payRank: annualPay(j),
         url: j.url,
         postedAt: Number.isNaN(postedAt.getTime()) ? new Date().toISOString() : postedAt.toISOString(),
         category: j.jobIndustry?.[0],
@@ -57,6 +58,20 @@ function normalizeType(raw?: string): JobType | null {
   return null;
 }
 
+// Some employers mark a yearly salary as hourly (e.g. "$74,000 / hour"). Same $200 cutoff as Adzuna.
+function salaryPeriod(j: JobicyJob): string {
+  const top = j.salaryMax || j.salaryMin || 0;
+  return j.salaryPeriod === 'hourly' && top > 200 ? 'yearly' : (j.salaryPeriod ?? '');
+}
+
+// For remote jobs, only rank USD so the numbers compare
+function annualPay(j: JobicyJob): number | undefined {
+  const top = j.salaryMax || j.salaryMin;
+  if (!top || (j.salaryCurrency && j.salaryCurrency !== 'USD')) return undefined;
+  const perYear = { yearly: 1, monthly: 12, weekly: 52, hourly: 2080 }[salaryPeriod(j)];
+  return perYear ? top * perYear : undefined;
+}
+
 function formatSalary(j: JobicyJob): string | undefined {
   if (!j.salaryMin && !j.salaryMax) return undefined;
   const fmt = new Intl.NumberFormat('en-US', {
@@ -64,9 +79,11 @@ function formatSalary(j: JobicyJob): string | undefined {
     currency: j.salaryCurrency || 'USD',
     maximumFractionDigits: 0,
   });
-  const range = j.salaryMin && j.salaryMax && j.salaryMin !== j.salaryMax
-    ? `${fmt.format(j.salaryMin)}–${fmt.format(j.salaryMax)}`
-    : fmt.format((j.salaryMin || j.salaryMax)!);
-  const period = { yearly: ' / year', monthly: ' / month', weekly: ' / week', hourly: ' / hour' }[j.salaryPeriod ?? ''] ?? '';
+  const range =
+    j.salaryMin && j.salaryMax && j.salaryMin !== j.salaryMax
+      ? `${fmt.format(j.salaryMin)}–${fmt.format(j.salaryMax)}`
+      : fmt.format((j.salaryMin || j.salaryMax)!);
+  const period =
+    { yearly: ' / year', monthly: ' / month', weekly: ' / week', hourly: ' / hour' }[salaryPeriod(j)] ?? '';
   return range + period;
 }

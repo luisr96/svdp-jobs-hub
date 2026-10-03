@@ -3,8 +3,8 @@ import Icon from './Icon.astro';
 
 interface Props {
   name: string; // board name, used in headings and the button label
-  url: string;
-  buttonLabel: string;
+  url?: string; // omit for an overview card with no outbound button
+  buttonLabel?: string;
   whoFor: string;
   expect: string[];
   tips: string[];
@@ -35,6 +35,7 @@ const listClass = 'm-0 flex list-disc flex-col gap-1.5 pl-5 text-base leading-[1
     <ul class={listClass}>{tips.map((item) => <li>{item}</li>)}</ul>
   </section>
 
+  {url && (
   <div class="flex flex-wrap items-center gap-4">
     <a
       href={url}
@@ -51,4 +52,5 @@ const listClass = 'm-0 flex list-disc flex-col gap-1.5 pl-5 text-base leading-[1
       </a>
     )}
   </div>
+  )}
 </article>

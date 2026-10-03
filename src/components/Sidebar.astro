@@ -12,21 +12,26 @@ const current = Astro.url.pathname.replace(/\/$/, '');
   </div>
 
   <nav aria-label="Job categories">
-    <ul class="m-0 flex list-none gap-1.5 overflow-x-auto p-0 max-[820px]:flex-row min-[821px]:flex-col">
+    <!-- Phones: one row of icon + short label tabs, so every link is visible without sideways scrolling. -->
+    <ul class="m-0 grid list-none grid-cols-5 gap-1 p-0 min-[821px]:flex min-[821px]:flex-col min-[821px]:gap-1.5">
       {navItems.map((item) => {
         const active = current === item.href;
         return (
-          <li class="shrink-0">
+          <li>
             <a
               href={item.href}
               aria-current={active ? 'page' : undefined}
               class:list={[
-                'flex min-h-11 items-center gap-3 whitespace-nowrap rounded-lg px-3.5 py-3 no-underline',
+                'flex h-full min-h-11 items-center rounded-lg no-underline',
+                'max-[820px]:flex-col max-[820px]:justify-center max-[820px]:gap-1 max-[820px]:px-1 max-[820px]:py-2 max-[820px]:text-center max-[820px]:text-xs max-[820px]:leading-tight',
+                'min-[821px]:gap-3 min-[821px]:px-3.5 min-[821px]:py-3',
                 active ? 'bg-gold font-bold text-navy hover:text-navy' : 'text-white hover:bg-white/10 hover:text-white',
               ]}
             >
               <Icon name={item.icon} />
-              {item.label}
+              <!-- Only one is displayed at a time, so the link's accessible name always matches what's on screen. -->
+              <span class="max-[820px]:hidden">{item.label}</span>
+              <span class="min-[821px]:hidden">{item.shortLabel}</span>
             </a>
           </li>
         );

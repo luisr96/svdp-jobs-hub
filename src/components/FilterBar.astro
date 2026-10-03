@@ -50,6 +50,73 @@ const action = Astro.url.pathname;
     >
       Show jobs
     </button>
-    {active && <a href={action} class="inline-flex min-h-11 items-center text-[15px] font-semibold">Clear filters</a>}
+    <span data-clear-filters>
+      {active && <a href={action} data-clear class="inline-flex min-h-11 items-center text-[15px] font-semibold">Clear filters</a>}
+    </span>
   </div>
 </form>
+
+<script>
+  import { wireSaveButtons } from '../scripts/save-buttons';
+
+  // Apply filters as soon as they change: dropdowns right away, the search box after a delay
+  const form = document.querySelector<HTMLFormElement>('#job-filters');
+  const SEARCH_DELAY_MS = 400;
+  let timer: number | undefined;
+  let controller: AbortController | undefined;
+
+  async function update() {
+    if (!form) return;
+    const params = new URLSearchParams(new FormData(form) as unknown as Record<string, string>);
+    const url = `${form.action}?${params}`;
+    controller?.abort();
+    controller = new AbortController();
+    try {
+      const res = await fetch(url, { signal: controller.signal });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const next = new DOMParser().parseFromString(await res.text(), 'text/html');
+      for (const sel of ['[data-job-count]', '[data-job-list]', '[data-clear-filters]']) {
+        const from = next.querySelector(sel);
+        const to = document.querySelector(sel);
+        if (from && to) to.innerHTML = from.innerHTML;
+      }
+      const list = document.querySelector('[data-job-list]');
+      if (list) wireSaveButtons(list);
+      history.replaceState(null, '', url);
+    } catch (err) {
+      if ((err as Error).name === 'AbortError') return;
+      form.submit(); // fall back to a normal page load
+    }
+  }
+
+  // "Show jobs" and Enter in the search box applies in place
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    clearTimeout(timer);
+    update();
+  });
+
+  form?.addEventListener('change', (e) => {
+    if ((e.target as HTMLElement).id === 'q') return; // handled by the input listener
+    clearTimeout(timer);
+    update();
+  });
+  form?.addEventListener('input', (e) => {
+    if ((e.target as HTMLElement).id !== 'q') return;
+    clearTimeout(timer);
+    timer = window.setTimeout(update, SEARCH_DELAY_MS);
+  });
+
+  // "Clear filters" resets the fields in place
+  document.addEventListener('click', (e) => {
+    if (!form || !(e.target as HTMLElement).closest('a[data-clear]')) return;
+    e.preventDefault();
+    clearTimeout(timer);
+    for (const el of Array.from(form.elements)) {
+      if (el instanceof HTMLSelectElement) el.selectedIndex = 0;
+      else if (el instanceof HTMLInputElement && el.type === 'search') el.value = '';
+    }
+    form.querySelector<HTMLInputElement>('#q')?.focus(); // the link is about to disappear
+    update();
+  });
+</script>

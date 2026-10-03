@@ -1,0 +1,8 @@
+# Astro markup is hand-formatted; Prettier rewraps nearly all of it.
+*.astro
+dist
+.astro
+.netlify
+package-lock.json
+design
+*.md
