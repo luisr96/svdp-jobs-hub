@@ -3,7 +3,6 @@ import type { Job } from './types';
 import { fetchWeWorkRemotely } from './sources/weworkremotely';
 import { fetchRemotive } from './sources/remotive';
 import { fetchJobicy } from './sources/jobicy';
-import { fetchAdzuna } from './sources/adzuna';
 const MIN = 60 * 1000;
 
 interface Source {
@@ -25,13 +24,7 @@ export interface JobResults {
   sources: string[]; // sources that returned data
 }
 
-// Cache keys change when the Job shape changes, so old cached data isn't reused
-// (":county" for the switch from radius to county queries, ":pay" for payRank).
-const localSources: Source[] = [{ name: 'Adzuna', cacheKey: 'Adzuna:county:pay', ttl: 60 * MIN, fetch: fetchAdzuna }];
-
 export const getRemoteJobs = () => getJobs(remoteSources);
-// Unfiltered; the Area filter (Collier by default) is applied in filters.ts.
-export const getLocalJobs = () => getJobs(localSources);
 
 async function getJobs(list: Source[]): Promise<JobResults> {
   const results = await Promise.allSettled(

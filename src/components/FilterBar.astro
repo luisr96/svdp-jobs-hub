@@ -39,7 +39,7 @@ const action = Astro.url.pathname;
       options={[{ value: '', label: 'Any' }, ...JOB_TYPES]}
       selected={filters.type}
     />
-    <!-- Page-specific last filter: "Open to" on Remote Work, "Area" on Local Jobs. -->
+    <!-- Page-specific last filter: e.g. "Open to" on Remote Work. -->
     <slot />
   </div>
 

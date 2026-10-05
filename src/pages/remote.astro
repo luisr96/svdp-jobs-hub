@@ -12,7 +12,7 @@ export const prerender = false; // rendered on request so filters work
 const filters = parseFilters(Astro.url.searchParams, REMOTE_CATEGORIES);
 const active = hasActiveFilters(filters);
 const { jobs, sources } = await getRemoteJobs();
-const shown = applyFilters(jobs, filters, { categories: REMOTE_CATEGORIES, kind: 'remote' });
+const shown = applyFilters(jobs, filters, { categories: REMOTE_CATEGORIES });
 setJobPageCacheHeaders(Astro.response.headers);
 ---
 <Layout

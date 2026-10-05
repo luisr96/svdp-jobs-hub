@@ -58,7 +58,7 @@ function normalizeType(raw?: string): JobType | null {
   return null;
 }
 
-// Some employers mark a yearly salary as hourly (e.g. "$74,000 / hour"). Same $200 cutoff as Adzuna.
+// Some employers mark a yearly salary as hourly (e.g. "$74,000 / hour"). Treat anything over $200/hour as yearly.
 function salaryPeriod(j: JobicyJob): string {
   const top = j.salaryMax || j.salaryMin || 0;
   return j.salaryPeriod === 'hourly' && top > 200 ? 'yearly' : (j.salaryPeriod ?? '');

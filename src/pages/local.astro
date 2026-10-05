@@ -1,58 +1,29 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import FilterBar from '../components/FilterBar.astro';
-import JobResults from '../components/JobResults.astro';
-import SelectField from '../components/SelectField.astro';
 import ResourceCard from '../components/ResourceCard.astro';
-import { getLocalJobs } from '../lib/jobs';
-import { AREAS } from '../lib/areas';
-import { LOCAL_CATEGORIES, applyFilters, hasActiveFilters, parseFilters } from '../lib/filters';
-import { setJobPageCacheHeaders } from '../lib/cache-headers';
 
-export const prerender = false; // rendered on request so filters work
-
-const filters = parseFilters(Astro.url.searchParams, LOCAL_CATEGORIES);
-const active = hasActiveFilters(filters);
-const { jobs, sources } = await getLocalJobs();
-const shown = applyFilters(jobs, filters, { categories: LOCAL_CATEGORIES, kind: 'local' });
-setJobPageCacheHeaders(Astro.response.headers);
+// Adzuna search for Naples, FL (location id 159500).
+const ADZUNA_URL = 'https://www.adzuna.com/search?loc=159500';
 ---
 <Layout
   title="Local Jobs"
-  intro="Jobs in Naples and across Collier County. Click any job to read the full posting and apply on the original site."
+  intro="Jobs in Naples and across Collier County from Adzuna. We link you straight to its search, where you can read each posting and apply."
 >
   <ResourceCard
     name="Adzuna"
+    url={ADZUNA_URL}
+    buttonLabel="Search jobs on Adzuna"
     whoFor="Anyone looking for work in person in Naples, Immokalee and the rest of Collier County. Adzuna gathers local job postings from many employers and job sites in one place."
     expect={[
-      'The jobs are listed below. Use the filters to narrow them by keyword, kind of work, job type or area.',
-      'Jobs in Collier County show first. Choose "Include Lee County" under Area to add jobs in Fort Myers, Cape Coral and Bonita Springs.',
-      'The list refreshes throughout the day.',
-      'Clicking "View job" opens the original posting, where you apply. Some employers may ask you to create a free account.',
-      'Pay is shown only when the employer lists it.',
+      'It is free to search for jobs.',
+      'The button opens Adzuna with jobs near Naples already showing.',
+      'To change the kind of work, job type, pay or distance, use the "Filter results" panel on the left side of the Adzuna page. On a phone, tap "Filter results" to open it.',
+      'Clicking a job opens the original posting, where you apply. Some employers may ask you to create a free account.',
     ]}
     tips={[
       'Try a simple keyword like "cashier", "driver" or "housekeeping".',
-      'Tap the bookmark on a job to save it, then find it later under Saved Jobs.',
       'Real employers never ask you to pay, buy equipment up front, or share bank details before you are hired.',
       'Found a job you like? Bring it to your Job Pathway coach for help with your resume and interview.',
     ]}
   />
-
-  <FilterBar categories={LOCAL_CATEGORIES} filters={filters} active={active}>
-    <SelectField id="area" name="area" label="Area" options={[...AREAS]} selected={filters.area} />
-  </FilterBar>
-
-  <JobResults
-    jobs={shown}
-    sources={sources}
-    sort={filters.sort}
-    active={active}
-    loadError="We couldn't load local jobs right now. Please check back in a little while."
-  />
-
-  <footer class="border-t border-card-border pt-4 text-[13px] leading-[1.6] text-subtle">
-    Jobs by <a href="https://www.adzuna.com/">Adzuna</a>. Each listing links to the original posting. Never pay to
-    apply for a job — if a listing asks for money, report it to your coach.
-  </footer>
 </Layout>
