@@ -29,6 +29,11 @@ setJobPageCacheHeaders(Astro.response.headers);
     />
   </FilterBar>
 
+  <p class="m-0 rounded-lg border border-card-border bg-white px-4 py-3 text-[15px] leading-normal text-ink">
+    <strong>Tip:</strong> Tap the bookmark on any job to save it as you search, then review them all in
+    <a href="/saved" class="font-semibold"> Saved Jobs</a> before you leave.
+  </p>
+
   <JobResults
     jobs={shown}
     sources={sources}

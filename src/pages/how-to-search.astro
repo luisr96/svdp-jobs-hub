@@ -1,0 +1,81 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Same Adzuna search as the Local Jobs page (Naples, FL).
+const ADZUNA_URL = 'https://www.adzuna.com/search?loc=159500';
+
+const steps = [
+  'Go to the Adzuna link below. Jobs near Naples will already be showing.',
+  'On the top left, where it says "job, company, title", type one job title from the list into the search box and click Search.',
+  'Use the "Filter results" panel on the left to narrow by job type, pay or distance. On a phone, tap "Filter results" to open it.',
+  'Click a job to read the full posting and apply on the employer\'s site. Bring any job you like to your Job Pathway coach.',
+];
+
+const groups = [
+  { name: 'Hospitality & resorts', terms: ['housekeeper', 'front desk', 'banquet server', 'dishwasher', 'line cook', 'bartender', 'valet'] },
+  { name: 'Healthcare support', terms: ['CNA', 'caregiver', 'home health aide', 'patient transporter', 'medical receptionist', 'dietary aide'] },
+  { name: 'Retail & grocery', terms: ['cashier', 'stocker', 'retail associate', 'deli clerk'] },
+  { name: 'Outdoors & trades', terms: ['landscaper', 'groundskeeper', 'pool technician', 'construction laborer', 'maintenance technician', 'painter'] },
+  { name: 'Driving & delivery', terms: ['delivery driver', 'CDL driver', 'warehouse associate'] },
+  { name: 'Office & service', terms: ['receptionist', 'customer service', 'security officer', 'janitor'] },
+  { name: 'Helpful words to add', terms: ['part time', 'seasonal', 'entry level', 'bilingual', 'no experience'] },
+];
+---
+<Layout
+  title="How to Search Local Jobs"
+  intro="A one-page guide for searching Naples jobs on Adzuna. Print it or save it as a PDF to keep handy."
+>
+  <div class="print:hidden">
+    <button
+      type="button"
+      onclick="window.print()"
+      class="inline-flex min-h-11 items-center rounded-lg bg-navy px-5 text-[15px] font-semibold text-white hover:bg-navy/90"
+    >
+      Print this guide
+    </button>
+  </div>
+
+  <section class="flex flex-col gap-3">
+    <h2 class="m-0 font-serif text-2xl font-bold text-navy">Four steps</h2>
+    <ol class="m-0 flex flex-col gap-2 pl-6 text-base leading-[1.55]">
+      {steps.map((step) => <li>{step}</li>)}
+    </ol>
+    <p class="m-0 text-base">
+      Adzuna: <a href={ADZUNA_URL} target="_blank" rel="noopener noreferrer" class="font-semibold break-all"
+        >{ADZUNA_URL.replace('https://', '')}<span class="sr-only"> (opens in a new tab)</span></a
+      >
+    </p>
+  </section>
+
+  <section class="flex flex-col gap-3">
+    <h2 class="m-0 font-serif text-2xl font-bold text-navy">Job titles to try</h2>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 print:grid-cols-2">
+      {groups.map((group) => (
+        <div class="rounded-lg border border-card-border bg-white p-4 print:break-inside-avoid print:p-2">
+          <h3 class="m-0 mb-1 text-base font-bold text-navy">{group.name}</h3>
+          <p class="m-0 text-[15px] leading-normal">{group.terms.join(' · ')}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <p class="m-0 text-[15px] leading-normal text-muted">
+    Real employers never ask you to pay, buy equipment up front, or share bank details before you are hired.
+  </p>
+</Layout>
+
+<style is:global>
+  @media print {
+    aside,
+    #status {
+      display: none !important;
+    }
+    body > div {
+      display: block !important;
+    }
+    main {
+      padding: 0 !important;
+      gap: 0.75rem !important;
+    }
+  }
+</style>
